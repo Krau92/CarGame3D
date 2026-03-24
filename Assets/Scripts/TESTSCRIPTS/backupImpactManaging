@@ -1,0 +1,143 @@
+using System;
+using ArcadeVP;
+using UnityEngine;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+
+public class AdaptedImpactManaging : MonoBehaviour
+{
+    public ArcadeVehicleController vehicleController;
+    public AudioClip impactClip;
+    public AudioSource audioSource;
+    public List<MeshFilter> meshFilter = new List<MeshFilter>();
+    public List<Mesh> mesh = new List<Mesh>();
+    public bool reset = false;
+
+    [Header("Deformation Settings")]
+    public float strength = 0.05f;
+    public float maxDistance = 1f;
+
+    private List<Vector3[]> originalVertices = new List<Vector3[]>();
+    private List<Vector3[]> modifiedVertices = new List<Vector3[]>();
+    private volatile bool hasResult;
+    private List<Vector3[]> resultVertices = new List<Vector3[]>();
+
+    [SerializeField] private float impactThreshold = 10f;
+
+    void OnEnable()
+    {
+        if (CircuitManager.Instance != null)
+        {
+            CircuitManager.Instance.OnRestartCircuit += ResetDeformation;
+        }
+    }
+
+    void OnDisable()
+    {
+        if (CircuitManager.Instance != null)
+        {
+            CircuitManager.Instance.OnRestartCircuit -= ResetDeformation;
+        }
+    }
+
+    void Awake()
+    {
+        foreach (MeshFilter mf in meshFilter)
+        {
+            Mesh newMesh = Instantiate(mf.sharedMesh);
+            mf.sharedMesh = newMesh;
+            mesh.Add(newMesh);
+            originalVertices.Add(newMesh.vertices);
+            Vector3[] modifiedVerts = new Vector3[newMesh.vertices.Length];
+            Array.Copy(newMesh.vertices, modifiedVerts, newMesh.vertices.Length);
+            modifiedVertices.Add(modifiedVerts);
+        }
+    }
+
+    void Update()
+    {
+        if (reset)
+        {
+            for (int i = 0; i < mesh.Count; i++)
+            {
+                Array.Copy(originalVertices[i], modifiedVertices[i], originalVertices[i].Length);
+                ApplyToMesh(mesh[i], modifiedVertices[i]);
+            }
+            reset = false;
+        }
+
+        if (hasResult)
+        {
+            hasResult = false;
+            for (int i = 0; i < mesh.Count; i++)
+            {
+                modifiedVertices[i] = resultVertices[i];
+                ApplyToMesh(mesh[i], modifiedVertices[i]);
+            }
+        }
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (vehicleController.carVelocity.magnitude > impactThreshold)
+        {
+            if (audioSource != null && impactClip != null)
+            {
+                audioSource.PlayOneShot(impactClip);
+            }
+            vehicleController.Impacted();
+            var contactPoint = collision.GetContact(0);
+            DeformMeshAsync(contactPoint.point, -contactPoint.normal, strength, maxDistance);
+        }
+    }
+
+    public void DeformMeshAsync(Vector3 impactPointWS, Vector3 impactNormalWS, float impactStrength, float impactMaxDistance)
+    {
+
+        Vector3 impactPointLS = transform.InverseTransformPoint(impactPointWS);
+        Vector3 impactNormalLS = transform.InverseTransformDirection(impactNormalWS).normalized;
+
+        List<Vector3[]> baseVerts = new List<Vector3[]>();
+        for (int i = 0; i < modifiedVertices.Count; i++)
+        {
+            baseVerts.Add(new Vector3[modifiedVertices[i].Length]);
+            Array.Copy(modifiedVertices[i], baseVerts[i], modifiedVertices[i].Length);
+        }
+
+        Task.Run(() =>
+        {
+            for (int m = 0; m < baseVerts.Count; m++)
+            {
+                for (int i = 0; i < baseVerts[m].Length; i++)
+                {
+                    float dist = Vector3.Distance(baseVerts[m][i], impactPointLS);
+
+                    //If it's too far from impact, skip it
+                    if (dist > impactMaxDistance) continue;
+
+                    float t = Mathf.Clamp01(dist / impactMaxDistance);
+                    float w = Mathf.SmoothStep(1f, 0f, t);
+
+                    // Modify vertex to simulate impact deformation
+                    baseVerts[m][i] -= impactNormalLS * (impactStrength * w);
+                }
+
+                resultVertices = baseVerts;
+            }
+            hasResult = true;
+        });
+    }
+
+    void ApplyToMesh(Mesh editedMesh, Vector3[] vertices)
+    {
+        editedMesh.vertices = vertices;
+        editedMesh.RecalculateNormals();
+        editedMesh.RecalculateBounds();
+    }
+
+    void ResetDeformation()
+    {
+        reset = true;
+    }
+
+}
