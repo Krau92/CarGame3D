@@ -19,7 +19,7 @@ public class ShowingCars : MonoBehaviour
         canDriftText.enabled = false;
     }
 
-    public void SetMaxStats (List<CarInfo> cars)
+    public void SetMaxStats(List<CarInfo> cars)
     {
         foreach (CarInfo car in cars)
         {
@@ -39,7 +39,7 @@ public class ShowingCars : MonoBehaviour
         carName.text = car.carName;
         canDriftText.enabled = car.canDrift;
     }
-    
+
     // Coroutine to animate update the stats bars
     private IEnumerator UpdateStatsCoroutine(CarInfo car)
     {
@@ -67,7 +67,7 @@ public class ShowingCars : MonoBehaviour
             yield return null;
         }
 
-        
+
         speedBar.fillAmount = targetSpeedFill;
         accBar.fillAmount = targetAccFill;
         handlingBar.fillAmount = targetHandlingFill;

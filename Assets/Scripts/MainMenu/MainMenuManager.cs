@@ -38,11 +38,13 @@ public class MainMenuManager : MonoBehaviour
     void OnEnable()
     {
         InputManager.onMoveUIInput += HandleMoveInput;
+        InputManager.onPauseAction += PreviousMenuState;
         InputManager.onSubmitAction += StartGame;
     }
     void OnDisable()
     {
         InputManager.onMoveUIInput -= HandleMoveInput;
+        InputManager.onPauseAction -= PreviousMenuState;
         InputManager.onSubmitAction -= StartGame;
 
     }

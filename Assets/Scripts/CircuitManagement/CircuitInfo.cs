@@ -8,5 +8,4 @@ public class CircuitInfo : ScriptableObject
     public string circuitName;
     public string circuitScene;
     public Sprite circuitThumbnail;
-
 }
