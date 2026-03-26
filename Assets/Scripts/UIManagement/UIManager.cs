@@ -103,7 +103,6 @@ public class UIManager : MonoBehaviour
 
     public void CountDown()
     {
-        Debug.Log("Calling countdown with counter: " + counter);
         if (counter > 0)
         {
             fullScreenText.text = counter.ToString();
@@ -161,13 +160,14 @@ public class UIManager : MonoBehaviour
 
         if (lapData != null && lapData.Count > 0)
         {
+            float lapTimeAdd = 0f;
             foreach (LapData lap in lapData)
             {
                 completedLaps += "Lap " + lap.lapNumber + ": " + TimeFormatter.FormatTime(lap.lapTime);
-
+                lapTimeAdd += lap.lapTime;
                 if (referenceLapTimes.Count != 0)
                 {
-                    float lapDifference = lap.lapTime - referenceLapTimes[lap.lapNumber - 1];
+                    float lapDifference = lapTimeAdd - referenceLapTimes[lap.lapNumber - 1];
                     string differenceText = lapDifference >= 0 ? " (+" : " (-";
                     differenceText += TimeFormatter.FormatDiffTime(Mathf.Abs(lapDifference));
                     differenceText += ")";
@@ -259,7 +259,10 @@ public class UIManager : MonoBehaviour
     public void ShowMenu(bool show, bool circuitEnded = false)
     {
         Time.timeScale = show ? 0f : 1f;
+        
         fullScreenPanel.SetActive(show);
+        
+        FadePanel(originalPanelAlpha, 0.5f);
 
         buttonsGroup.SetActive(show);
         buttonsGroup.GetComponent<ButtonsGroup>().ShowButtons(show, circuitEnded);
@@ -281,7 +284,6 @@ public class UIManager : MonoBehaviour
 
         bool isActive = fullScreenPanel.activeSelf;
         ShowMenu(!isActive, false);
-        Time.timeScale = isActive ? 1f : 0f;
     }
 
 }

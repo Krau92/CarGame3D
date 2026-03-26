@@ -51,7 +51,10 @@ public class PlayRecordedCircuit : MonoBehaviour
             transform.rotation = Quaternion.Slerp(lastRotation, nextRotation, percentage);
 
             if (sphereTransform != null)
-                sphereTransform.position = transform.position + sphereTransformOffset;
+            {
+                sphereTransform.localPosition = Vector3.zero + sphereTransformOffset;
+                sphereTransform.localRotation = Quaternion.identity;
+            }
 
             if (carController != null)
             {
@@ -78,11 +81,12 @@ public class PlayRecordedCircuit : MonoBehaviour
                 {
                     CameraManagement.Instance.StopReplay();
                     UIManager.Instance.ShowMenu(true, true);
-                } else
+                }
+                else
                 {
                     gameObject.SetActive(false);
                 }
-               
+
             }
         }
     }
@@ -92,7 +96,7 @@ public class PlayRecordedCircuit : MonoBehaviour
     {
         if (sphereTransform != null && sphereTransformOffset == Vector3.zero)
         {
-            sphereTransformOffset = sphereTransform.position - transform.position;
+            sphereTransformOffset = sphereTransform.localPosition;
         }
         ToggleComponents(false);
         isPlaying = true;
@@ -128,7 +132,7 @@ public class PlayRecordedCircuit : MonoBehaviour
         }
 
         foreach (var rb in rigidbodiesToDisable)
-        {            
+        {
             rb.isKinematic = !state;
         }
 
@@ -138,15 +142,16 @@ public class PlayRecordedCircuit : MonoBehaviour
         }
         foreach (var component in componentsToDisable)
         {
-            if(component.isActiveAndEnabled && component.name == "ArcadeVehicleController")
+            if (component.isActiveAndEnabled && component.name == "ArcadeVehicleController")
             {
                 ArcadeVehicleController avc = component as ArcadeVehicleController;
                 avc.ReactivateComponent(false);
-            } else
+            }
+            else
             {
                 component.enabled = state;
             }
-        }   
+        }
     }
 
 

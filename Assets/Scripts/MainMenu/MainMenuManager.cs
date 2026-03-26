@@ -57,7 +57,6 @@ public class MainMenuManager : MonoBehaviour
             Time.timeScale = 1f;
         }
 
-        DataManager.LoadData(bestCircuitTimeSummary);
         currentCarIndex = 0;
         currentMenuState = MenuState.MainMenu;
         showingCars = GetComponent<ShowingCars>();
@@ -68,6 +67,7 @@ public class MainMenuManager : MonoBehaviour
 
     void ShowMainMenu()
     {
+        DataManager.LoadData(bestCircuitTimeSummary);
         mainMenuPanel.SetActive(true);
         circuitSelectionPanel.SetActive(false);
         carSelectionPanel.SetActive(false);

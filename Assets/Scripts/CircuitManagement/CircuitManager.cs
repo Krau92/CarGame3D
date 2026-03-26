@@ -139,6 +139,7 @@ public class CircuitManager : MonoBehaviour
         playerCarTransform.position = initialCarPosition.position;
         playerCarTransform.rotation = initialCarPosition.rotation;
         playerCarTransform.gameObject.SetActive(true);
+        playerCarController.ForceStopVehicle();
         CameraManagement.Instance.StopReplay(); //To avoid potential issues
         UIManager.Instance.ChangeLapTimePanelVisibility(false);
         UIManager.Instance.ShowMenu(false, false);

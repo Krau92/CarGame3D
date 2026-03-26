@@ -12,6 +12,7 @@ namespace ArcadeVP
         public MovementMode movementMode;
         public groundCheck GroundCheck;
         public LayerMask drivableSurface, dirtTrackSurface, outOfBoundsSurface;
+        private float stoppingCarMultiplier = 0.5f;
 
         public float MaxSpeed, accelaration, turn, gravity = 7f, downforce = 5f;
         [Tooltip("if true : can turn vehicle in air")]
@@ -113,8 +114,8 @@ namespace ArcadeVP
         {
             if (!canMove)
             {
-                rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, Vector3.zero, accelaration * Time.deltaTime);
-                rb.angularVelocity = Vector3.Slerp(rb.angularVelocity, Vector3.zero, accelaration * Time.deltaTime);
+                rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, Vector3.zero, stoppingCarMultiplier * Time.deltaTime);
+                rb.angularVelocity = Vector3.Slerp(rb.angularVelocity, Vector3.zero, stoppingCarMultiplier * Time.deltaTime);
                 carVelocity = carBody.transform.InverseTransformDirection(rb.linearVelocity);
                 return;
             }
@@ -252,13 +253,12 @@ namespace ArcadeVP
                     Quaternion.Euler(0, driftAngle * steeringInput * Mathf.Sign(carVelocity.z), 0),
                     0.1f * Time.deltaTime / Time.fixedDeltaTime);
                 }
-                else
-                {
-                    BodyMesh.parent.localRotation = Quaternion.Slerp(BodyMesh.parent.localRotation,
-                    Quaternion.Euler(0, 0, 0),
-                    0.1f * Time.deltaTime / Time.fixedDeltaTime);
-                }
 
+            } else if(BodyMesh.parent.localRotation != Quaternion.Euler(0, 0, 0))
+            {
+                BodyMesh.parent.localRotation = Quaternion.Slerp(BodyMesh.parent.localRotation,
+                Quaternion.Euler(0, 0, 0),
+                0.1f * Time.deltaTime / Time.fixedDeltaTime);
             }
 
         }
@@ -410,6 +410,7 @@ namespace ArcadeVP
 
         public void SetCanMove(bool value)
         {
+            stoppingCarMultiplier = accelaration;
             canMove = value;
         }
 
@@ -417,17 +418,12 @@ namespace ArcadeVP
         {
             currentDamagedMultiplier = 1f;
             this.canMove = canMove;
-            //StartCoroutine(ReactivateComponentCoroutine(canMove));
         }
 
-        // IEnumerator ReactivateComponentCoroutine(bool canMove)
-        // {
-        //     carVelocity = Vector3.zero;
-        //     rb.linearVelocity = Vector3.zero;
-        //     rb.angularVelocity = Vector3.zero;
-        //     yield return new WaitForSeconds(1f);
-        //     this.canMove = canMove;
-        // }
+        public void ForceStopVehicle()
+        {
+            stoppingCarMultiplier = 30f;
+        }
 
         public void ForceWheelRotation(float distanceDiff, float steering)
         {
