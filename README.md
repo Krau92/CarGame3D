@@ -5,11 +5,13 @@
 </div>
 
 # Introducció
-On the road és un videojoc de cotxes basat en curses contrarellotge en què el jugador competeix amb si mateix per aconseguir el millor temps. En aquesta demo hi ha tres cotxes disponibles i 2 circuits complets.
+On the road és un videojoc de cotxes basat en curses contrarellotge en què el jugador competeix amb si mateix per aconseguir el millor temps. En aquesta demo hi ha tres cotxes disponibles i 2 circuits complets.<br>
+En <a href="https://youtu.be/R4sRKGc6_aU">aquest enllaç</a> es pot accedir al vídeo resum del projecte.
 <div align="center">
 <img src="ReadmeImages/Gameplay.gif" width="600">
 <br> <br>
 </div>
+<i>NOTA: Les imatges mostrades en aquest document poden diferir lleugerament de la versió final de la demo</i>
 
 # Com es juga
 
@@ -17,11 +19,12 @@ On the road és un videojoc de cotxes basat en curses contrarellotge en què el 
 
 <div align="center">
   <br>
-  <kbd>🖱️</kbd> - Interacció amb el menú <br><br>
-  <kbd>🖱️LMC</kbd> - Executar l'acció del botó <br><br>
-  <kbd>A</kbd>  <kbd>D</kbd> - Durant la selecció de cotxe, canviar de cotxe <br><br>
-  <kbd>Intro</kbd> - Escollir cotxe <br><br>
-  <kbd>Esc</kbd> - Tornar al menú anterior
+
+  <kbd>🖱️</kbd> - <i>Interacció amb el menú</i> <br><br>
+  <kbd>🖱️LMC</kbd> - <i>Executar l'acció del botó</i> <br><br>
+  <kbd>A</kbd>  <kbd>D</kbd> - <i>Durant la selecció de cotxe, canviar de cotxe</i> <br><br>
+  <kbd>Intro</kbd> - <i>Escollir cotxe</i> <br><br>
+  <kbd>Esc</kbd> - <i>Tornar al menú anterior</i>
 
 </div>
 
@@ -29,11 +32,11 @@ On the road és un videojoc de cotxes basat en curses contrarellotge en què el 
 
 <div align="center">
 <br>
-  <kbd>A</kbd> <kbd>D</kbd> - Girar el volant <br><br>
-  <kbd>W</kbd> - Accelerar <br><br>
-  <kbd>S</kbd> - Frenar / Marxa enrere <br> <br>
-  <kbd>Spacebar</kbd> - Fre de mà / Derrapar (si el cotxe ho permet) <br><br>
-  <kbd>Esc</kbd> - Pausar el joc
+  <kbd>A</kbd> <kbd>D</kbd> - <i>Girar el volant </i><br><br>
+  <kbd>W</kbd> - <i>Accelerar </i><br><br>
+  <kbd>S</kbd> - <i>Frenar / Marxa enrere </i><br> <br>
+  <kbd>Spacebar</kbd> - <i>Fre de mà / Derrapar (si el cotxe ho permet)</i> <br><br>
+  <kbd>Esc</kbd> - <i>Pausar el joc</i>
 </div>
 
 # Característiques dels circuits
